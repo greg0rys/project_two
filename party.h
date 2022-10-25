@@ -9,6 +9,7 @@ class party
 public:
     party(); // default
     party(char *, char *); // set up a party with info for the stack
+    party(char *, int, char *, char *, bool);
     party(const party &); // copy constructor
     ~party(); // destructor
     void setPartyName(char *); // set the parties name

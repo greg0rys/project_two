@@ -10,6 +10,21 @@ partyCount(0), specialSeating(nullptr), promos(true)
 {}
 
 
+party::party(char *pName, int pSize, char *sSeating, char *pEmail, bool
+wantPromos)
+{
+    partyName = new char[strlen(pName) + 1];
+    strcpy(partyName, pName);
+    specialSeating = new char[strlen(sSeating) + 1];
+    strcpy(specialSeating,sSeating);
+    email = new char[strlen(pEmail) + 1];
+    strcpy(email, pEmail);
+    partyCount = pSize;
+    promos = wantPromos;
+
+}
+
+
 party::~party()
 {
     if(partyName)

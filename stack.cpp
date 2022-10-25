@@ -113,7 +113,45 @@ void stack::grow()
 
 }
 
+void stack::loadFromFile(const char *filename)
+{
+    fstream file(filename);
+    int totalLoaded = 0;
+    const int MAX_CHAR = 101;
+    char partyName[MAX_CHAR];
+    char specialSeats[MAX_CHAR];
+    char email[MAX_CHAR];
+    int partySize;
+    char promos[MAX_CHAR];
+    bool wantPromos; // can be set using strcmp on read
 
+    file.get(partyName,MAX_CHAR,';');
+
+    while(!file.eof())
+    {
+        file.get();
+        file.get(specialSeats, MAX_CHAR, ';');
+        file.get();
+        file.get(email, MAX_CHAR, ';');
+        file >> partySize;
+        file.ignore(MAX_CHAR,'\n');
+        file.get(promos, MAX_CHAR, '\n');
+        if(strcmp(promos, "true") == 0)
+        {
+            wantPromos = true;
+        }
+        else
+        {
+            wantPromos = false;
+        }
+
+        party newParty(partyName, partySize, specialSeats, email, wantPromos);
+        push(newParty);
+        totalLoaded++;
+        file.get(partyName, MAX_CHAR, ';');
+    }
+    file.close();
+}
 
 
 const stack& stack::operator=(const stack &aStack)
