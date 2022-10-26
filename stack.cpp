@@ -101,6 +101,7 @@ bool stack::isEmpty() const
 
 void stack::grow()
 {
+    // growth strategy grow array by 2x its size.
     currentSize *= GROWTH_FACTOR;
     auto ** tempStack = new party*[currentSize];
 
@@ -113,7 +114,7 @@ void stack::grow()
 
 }
 
-void stack::loadFromFile(const char *filename)
+int stack::loadFromFile(const char *filename)
 {
     fstream file(filename);
     int totalLoaded = 0;
@@ -136,14 +137,8 @@ void stack::loadFromFile(const char *filename)
         file >> partySize;
         file.ignore(MAX_CHAR,'\n');
         file.get(promos, MAX_CHAR, '\n');
-        if(strcmp(promos, "true") == 0)
-        {
-            wantPromos = true;
-        }
-        else
-        {
-            wantPromos = false;
-        }
+        // set true if promos in CSV is 'true' else set false.
+        wantPromos = (strcmp(promos, "true") == 0);
 
         party newParty(partyName, partySize, specialSeats, email, wantPromos);
         push(newParty);
@@ -151,6 +146,18 @@ void stack::loadFromFile(const char *filename)
         file.get(partyName, MAX_CHAR, ';');
     }
     file.close();
+
+    return totalLoaded;
+}
+
+
+void stack::saveToFile(const char *filename, const party &aParty) const
+{
+    ofstream file(filename);
+    // make use of overloaded out stream operator in party ADT
+    file << (aParty) << endl;
+    file.close();
+
 }
 
 
@@ -168,3 +175,5 @@ const stack& stack::operator=(const stack &aStack)
 
     return *this;
 }
+
+

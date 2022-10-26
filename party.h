@@ -1,3 +1,4 @@
+#pragma once
 #include <cstring>
 #include <cctype>
 #include <iostream>
@@ -9,6 +10,7 @@ class party
 public:
     party(); // default
     party(char *, char *); // set up a party with info for the stack
+    party(char *, char *, int);
     party(char *, int, char *, char *, bool);
     party(const party &); // copy constructor
     ~party(); // destructor
@@ -22,6 +24,7 @@ public:
     void getSpecailSeating(char *); // get parties special seating choice
     bool getPromos() const; // get promo choice for party
     party& operator =(const party &); // overloaded assignment operator
+    friend ostream& operator<<(ostream &out, const party &aParty);
 
 private:
     char * partyName;
@@ -29,6 +32,8 @@ private:
     char * specialSeating;
     char * email;
     bool promos;
+
+    int getPartyNameLength() const;
 
 
 

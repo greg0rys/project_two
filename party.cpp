@@ -25,6 +25,11 @@ wantPromos)
 }
 
 
+party::party(char * pName, char * sSeats, int pSize):partyName(pName),
+specialSeating(sSeats),partyCount(pSize),email(nullptr),promos(false)
+{}
+
+
 party::~party()
 {
     if(partyName)
@@ -114,6 +119,12 @@ bool party::getPromos() const
 }
 
 
+int party::getPartyNameLength() const
+{
+    return ((int)strlen(partyName));
+}
+
+
 party& party::operator=(const party &aCopy)
 {
     if(this == &aCopy)
@@ -164,4 +175,15 @@ party& party::operator=(const party &aCopy)
 
     return *this;
 }
+
+// why do I get an error when I use const ostream &out ?
+ostream &operator<<(ostream &out, const party &aParty)
+{
+    out << "Name: " << aParty.partyName << "Email: " << aParty.email
+        << endl;
+
+    return out;
+}
+
+
 

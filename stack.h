@@ -20,8 +20,8 @@ public:
     int getSize() const;
     bool isEmpty() const;
 
-    void loadFromFile(const char *filename);
-    void saveToFile(const char *filename) const;
+    int loadFromFile(const char *filename);
+    void saveToFile(const char *filename, const party &aParty) const;
 
     const stack& operator=(const stack &aStack);
 
