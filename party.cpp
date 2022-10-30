@@ -179,8 +179,11 @@ party& party::operator=(const party &aCopy)
 // why do I get an error when I use const ostream &out ?
 ostream &operator<<(ostream &out, const party &aParty)
 {
-    out << "Name: " << aParty.partyName << "Email: " << aParty.email
-        << endl;
+
+    out << "Name: " << aParty.partyName << " Party Size: " << aParty
+    .partyCount << endl;
+
+
 
     return out;
 }

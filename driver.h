@@ -5,8 +5,10 @@ using namespace std;
 
 
 void menu();
+void workInQueue(queue &);
+void workInStack(stack &);
 int main();
 void getInput(char *&);
-void  makeParty(party &); // should we make this take a party *? // no bc the
+party  makeParty(); // should we make this take a party *? // no bc the
 // local pointer will destruct when the function ends.
 int getInteger() ;

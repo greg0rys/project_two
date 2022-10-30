@@ -23,8 +23,10 @@ public:
     int getPartyCount() const; // get the parties count
     void getSpecailSeating(char *); // get parties special seating choice
     bool getPromos() const; // get promo choice for party
+    int getPartyNameLength() const;
     party& operator =(const party &); // overloaded assignment operator
-    friend ostream& operator<<(ostream &out, const party &aParty);
+    friend bool operator==(const party &partA, const party &partyB);
+    friend ostream& operator<<( ostream &out, const party &aParty);
 
 private:
     char * partyName;
@@ -33,7 +35,7 @@ private:
     char * email;
     bool promos;
 
-    int getPartyNameLength() const;
+
 
 
 

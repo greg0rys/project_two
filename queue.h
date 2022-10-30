@@ -15,8 +15,11 @@ public:
 
     bool isEmpty();
     bool enqueue(const party &);
-    bool dequeue();
-    party& peekFron();
+    bool dequeue(party &) noexcept(false);
+    bool peekFront(party &);
+    void printQueue();
+
+    friend ostream& operator<<( ostream &out, const queue &aQueue);
 
 private:
     struct node
@@ -45,6 +48,10 @@ private:
     node *top, *tail;
     void destroy (node *&);
     node * append(node *&, const party &);
+    node * remove(node *&,party &) noexcept(false);
+    void print(node *front);
+    char * errorMsg;
+    int count;
 
 
 };

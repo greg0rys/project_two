@@ -2,19 +2,55 @@
 
 void menu()
 {
+    queue theQueue;
+    stack theStack;
+    char * partyName = nullptr;
+    char * specialSeats = nullptr;
+    char * partyEmail = nullptr;
+    char * nextParty = nullptr;
+    int partyCount;
+    bool wantsPromos;
+    bool removed;
+    party aParty;
     int option = 0;
     while(option != 7)
     {
-        cout << "Please enter a menu choice: ";
+        cout << " ****** MENU: ****** " << endl;
+        cout << "1.\t Add a party. " << endl
+             << "2.\t Seat the next party. " << endl
+             << "3.\t Display the queue (prints whole queue). " << endl
+             << "4.\t Contact customers for promotions (displays customer "
+                "info) " << endl
+             << "5.\t See all customers who want promotional offers. " <<
+             endl
+             << "6.\t See past customers contacted for promotional offers "
+             << endl << endl;
+
+        cout << "Please enter a menu choice from above (EX 1. to add): ";
         option = getInteger();
 
         switch(option)
         {
             case 1:
-                cout << "A choice " << endl;
+               aParty = makeParty();
+               theQueue.enqueue(aParty);
                 break;
-            case 7:
-                cout << "Goodbye!" << endl;
+            case 2:
+                if(theQueue.dequeue(aParty))
+                {
+                    if(partyName)
+                    {
+                        delete []partyName;
+                    }
+                    partyName = new char[aParty.getPartyNameLength() + 1];
+                    aParty.getPartyName(partyName);
+                    cout << partyName << " has been seated! " << endl;
+                    theStack.push(aParty);
+                }
+                break;
+            case 3:
+                theQueue.printQueue();
+                cout << endl;
                 break;
             default:
                 cout << "That is not a valid menu choice please try again! "
@@ -82,7 +118,7 @@ int getInteger()
     return numberIn;
 }
 
-void makeParty(party &aParty)
+party makeParty()
 {
     typedef char * charC; // redefine char * to avoid having to type the
     // special char *
@@ -90,9 +126,11 @@ void makeParty(party &aParty)
     charC specialSeats = nullptr;
     charC pEmail = nullptr;
     charC  promos = nullptr;
-    typedef bool truthy;
-    truthy wantsPromos;
+    bool wantsPromos = false;
     int partySize;
+    party aParty;
+
+
 
     cout << "Enter the first and last name of the party: ";
     getInput(partyName);
@@ -104,30 +142,53 @@ void makeParty(party &aParty)
     cout << "Would the party like to recieve updates about promotions we're "
             "having? (y. for yes, n.for no) ";
     getInput(promos);
-    wantsPromos = (strcmp(promos, "true") == 0);
 
-    if(wantsPromos)
+    if(strcmp(promos, "y") == 0)
     {
-        cout << "Please enter parties email address (EX joe@food.net): ";
+        cout << "Please enter the email address for the party EX(j@J.com): ";
         getInput(pEmail);
-        aParty = party(partyName,partySize,specialSeats,pEmail,
-                           wantsPromos);
+        wantsPromos = true;
+        aParty.setEmail(pEmail);
     }
-    else
-    {
-        aParty = party(partyName,specialSeats,partySize);
-    }
+
+    aParty.setPartyName(partyName);
+    aParty.setSpecialSeating(specialSeats);
+    aParty.setPartyCount(partySize);
+    aParty.setPromos(wantsPromos);
 
     if(partyName)
+    {
         delete []partyName;
+
+    }
+
     if(specialSeats)
+    {
         delete []specialSeats;
+
+    }
+
     if(pEmail)
+    {
         delete []pEmail;
+    }
+
     if(promos)
+    {
         delete []promos;
-    partyName = nullptr;
-    specialSeats = nullptr;
-    pEmail = nullptr;
-    promos = nullptr;
+
+    }
+
+    return aParty;
+
+
+
+
+
+}
+
+int main()
+{
+    menu();
+    return 0;
 }

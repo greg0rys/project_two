@@ -20,6 +20,7 @@ public:
     int getSize() const;
     bool isEmpty() const;
 
+
     int loadFromFile(const char *filename);
     void saveToFile(const char *filename, const party &aParty) const;
 
