@@ -18,6 +18,7 @@ public:
     bool dequeue(party &) noexcept(false);
     bool peekFront(party &);
     void printQueue();
+    int getCount() const;
 
     friend ostream& operator<<( ostream &out, const queue &aQueue);
 
@@ -50,6 +51,8 @@ private:
     node * append(node *&, const party &);
     node * remove(node *&,party &) noexcept(false);
     void print(node *front);
+    node * getTop();
+    node * removeFront(node *&, party &);
     char * errorMsg;
     int count;
 

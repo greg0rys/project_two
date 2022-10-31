@@ -60,7 +60,9 @@ queue::node * queue::append(queue::node *&rear, const party& aParty)
     {
         node * temp = new node(aParty);
         top = tail = temp;
+        top->next = temp;
         tail->next = top;
+        count++;
         return top;
     }
 
@@ -68,6 +70,7 @@ queue::node * queue::append(queue::node *&rear, const party& aParty)
     temp->next = rear->next;
     rear->next = temp;
     rear = temp;
+    count++;
     return rear;
 
 
@@ -83,44 +86,37 @@ queue::node * queue::append(queue::node *&rear, const party& aParty)
 bool queue::dequeue(party &aParty)
 {
     if(isEmpty())
-        return false;
-    try{
-        top = remove(top, aParty);
-        return true;
-    }
-    // to keep our ADT from outputting the message, we will copy it into the
-    // errorMsg pointer.
-    catch(std::logic_error &error)
     {
-        if(errorMsg)
-            delete []errorMsg;
-        errorMsg = new char[101];
-        strcpy(errorMsg, error.what());
         return false;
     }
+    top = removeFront(top, aParty);
+    return true;
+}
+
+queue::node* queue::removeFront(node *& head, party &aParty) {
+    if(!head)
+    {
+        return head;
+    }
+
+    if(head == tail)
+    {
+        delete top;
+        top = nullptr;
+        return top;
+    }
+
+    node * temp = top;
+    top = top->next;
+    tail->next = top;
+    delete temp;
+    return top;
 }
 
 
-/*
- * Recursive remove the target node from the queues front
- * INPUT: node *& a pointer to the top of the queue, party &aParty, the
- * party we wish to remove, party &partyInfo, the removed parties information.
- * OUTPUT: node * the updated queue.
- */
-queue::node * queue::remove(queue::node *&top, party &aParty) noexcept(false)
-{
-   if(!top)
-      throw(std::logic_error("The list is empty"));
-
-   node * toRemove = top;
-   aParty = *top->aParty;
-   tail->next = top->next;
-   top = top->next;
-   delete toRemove;
-
-   return top;
+int queue::getCount() const {
+    return count;
 }
-
 
 
 bool queue::peekFront(party &aParty)
@@ -138,35 +134,35 @@ bool queue::peekFront(party &aParty)
 
 void queue::printQueue()
 {
+    if(isEmpty())
+    {
+        cout << "Queue has no visitors.. " << endl;
+    }
     print(top);
 }
 
 
 void queue::print(queue::node *front)
 {
-     int index = 1;
 
-     if(!front)
-     {
-         return;
-     }
-
-    // base case if front = tail then we need to return so we don't loop
-    if(front == tail->next)
+    if(!front)
     {
-        cout << "Party " << index << ": " << *front->aParty << endl;
         return;
     }
 
-        cout << "Party " << index << ": " << *front->aParty << endl;
-        index++;
-        print(front->next);
+    if(front == tail)
+    {
+        cout << *(front->aParty) << endl;
+        return;
+    }
 
-
+    print(front->next);
+    cout << *(front->aParty) << endl;
 }
 
 
 /*
+ * todo: move this to party class
  * overload the == operator to compare if two parties are the same party.
  * if both parties have the same name they are a match
  * OUTPUT: true if the parties have the same name, false if else.
@@ -180,14 +176,8 @@ bool operator==(const party &partyA, const party &partyB)
 
 ostream& operator<<(ostream &out, const queue &aQueue)
 {
-    typedef queue::node node;
-    int index = 1;
-
-    for(node * front = aQueue.top; front; front = front->next)
-    {
-        cout <<"Party " << index << ": " << front->aParty << endl;
-        index++;
-    }
+    out << "The queue currently has: " << aQueue.getCount()
+        << "party(ies) in it" << endl;
 
     return out;
 }

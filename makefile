@@ -10,6 +10,6 @@ app: driver.o party.o stack.o queue.o
 
 .PHONY: clean
 clean:
-	$(info -- cleaning up  --)
+	$(info -- cleaning up --)
 	rm -f *.o
 	rm -f app
