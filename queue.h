@@ -46,7 +46,7 @@ private:
         }
     };
 
-    node *top, *tail;
+    node *front, *tail;
     int count;
     // private method stubs
     void destroy (node *&);

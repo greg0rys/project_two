@@ -2,11 +2,11 @@
 #pragma ide diagnostic ignored "misc-no-recursion"
 #include "queue.h"
 
-queue::queue(): top(nullptr),tail(nullptr)
+queue::queue(): front(nullptr), tail(nullptr)
 {}
 
 
-queue::queue(const queue &aCopy): top(nullptr), tail(nullptr),count(0)
+queue::queue(const queue &aCopy): front(nullptr), tail(nullptr), count(0)
 {
     *this = aCopy;
 }
@@ -14,7 +14,7 @@ queue::queue(const queue &aCopy): top(nullptr), tail(nullptr),count(0)
 
 queue::~queue()
 {
-    destroy(top);
+    destroy(front);
 }
 
 
@@ -33,7 +33,7 @@ void queue::destroy(node *& head)
 
 bool queue::isEmpty()
 {
-    return (top == nullptr);
+    return (front == nullptr);
 }
 
 
@@ -48,22 +48,22 @@ bool queue::enqueue(const party &aParty)
 /*
  * Recursively append a new party to the end of the queue and update the
  * pointers
- * INPUT: node *&top a pointer reference to the top pointer of the queue
+ * INPUT: node *&front a pointer reference to the front pointer of the queue
  * party &aParty - a reference to a party joining the queue
- * OUTPUT node * the updated top pointer to the caller.
+ * OUTPUT node * the updated front pointer to the caller.
  */
 queue::node * queue::append(queue::node *&rear, const party& aParty)
 {
     // base case the queue is empty;
 
-    if(!top)
+    if(!front)
     {
         node * temp = new node(aParty);
-        top = tail = temp;
-        top->next = temp;
-        tail->next = top;
+        front = tail = temp;
+        front->next = temp;
+        tail->next = front;
         count = 1;
-        return top;
+        return front;
     }
 
     node * temp = new node(aParty);
@@ -89,7 +89,7 @@ bool queue::dequeue(party &aParty)
     {
         return false;
     }
-    top = removeFront(top, aParty);
+    front = removeFront(front, aParty);
     count--;
     return true;
 }
@@ -102,17 +102,17 @@ queue::node* queue::removeFront(node *& head, party &aParty) {
 
     if(head == tail)
     {
-        delete top;
-        top = nullptr;
-        return top;
+        delete front;
+        front = nullptr;
+        return front;
     }
 
-    node * temp = top;
-    aParty = *top->aParty;
-    top = top->next;
-    tail->next = top;
+    node * temp = front;
+    aParty = *front->aParty;
+    front = front->next;
+    tail->next = front;
     delete temp;
-    return top;
+    return front;
 }
 
 
@@ -123,10 +123,10 @@ int queue::getCount() const {
 
 bool queue::peekFront(party &aParty)
 {
-    // if queue isn't empty; copy the top pointer into the param ref.
+    // if queue isn't empty; copy the front pointer into the param ref.
     if(!isEmpty())
     {
-        aParty = *top->aParty;
+        aParty = *front->aParty;
 
     }
     // true if the queue isn't empty; false if else.
@@ -136,7 +136,7 @@ bool queue::peekFront(party &aParty)
 
 void queue::printQueue()
 {
-    print(top);
+    print(front);
 }
 
 
