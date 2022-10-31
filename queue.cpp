@@ -6,7 +6,7 @@ queue::queue(): top(nullptr),tail(nullptr)
 {}
 
 
-queue::queue(const queue &aCopy): top(nullptr), tail(nullptr)
+queue::queue(const queue &aCopy): top(nullptr), tail(nullptr),count(0)
 {
     *this = aCopy;
 }
@@ -62,7 +62,7 @@ queue::node * queue::append(queue::node *&rear, const party& aParty)
         top = tail = temp;
         top->next = temp;
         tail->next = top;
-        count++;
+        count = 1;
         return top;
     }
 
@@ -90,6 +90,7 @@ bool queue::dequeue(party &aParty)
         return false;
     }
     top = removeFront(top, aParty);
+    count--;
     return true;
 }
 
@@ -107,6 +108,7 @@ queue::node* queue::removeFront(node *& head, party &aParty) {
     }
 
     node * temp = top;
+    aParty = *top->aParty;
     top = top->next;
     tail->next = top;
     delete temp;
@@ -134,10 +136,6 @@ bool queue::peekFront(party &aParty)
 
 void queue::printQueue()
 {
-    if(isEmpty())
-    {
-        cout << "Queue has no visitors.. " << endl;
-    }
     print(top);
 }
 
@@ -145,19 +143,24 @@ void queue::printQueue()
 void queue::print(queue::node *front)
 {
 
+    // base case we've reached a null place in the list.
     if(!front)
     {
         return;
     }
 
+    // case 2: we've reached the tail of the list, return from here so we
+    // don't loop back around
     if(front == tail)
     {
         cout << *(front->aParty) << endl;
         return;
     }
 
-    print(front->next);
-    cout << *(front->aParty) << endl;
+    cout << *(front->aParty) << endl; // print data before recursing so it
+    // prints in correct order.
+    print(front->next); // print the next party
+
 }
 
 
@@ -173,11 +176,14 @@ bool operator==(const party &partyA, const party &partyB)
 }
 
 
-
+/*
+ * override the stream insertion operator to output how many people are in
+ * the queue at a given time when the queue is called to be printed.
+ */
 ostream& operator<<(ostream &out, const queue &aQueue)
 {
     out << "The queue currently has: " << aQueue.getCount()
-        << "party(ies) in it" << endl;
+        << " people in it" << endl;
 
     return out;
 }

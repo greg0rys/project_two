@@ -32,19 +32,22 @@ specialSeating(sSeats),partyCount(pSize),email(nullptr),promos(false)
 
 party::~party()
 {
+    destroy();
+    partyName = specialSeating = email = nullptr;
+    promos = false;
+    partyCount = 0;
+}
+
+void party::destroy()
+{
     if(partyName)
         delete []partyName;
     if(specialSeating)
         delete []specialSeating;
     if(email)
         delete []email;
-    partyName = nullptr;
-    specialSeating = nullptr;
-    email = nullptr;
-    partyCount = 0;
-    promos = false;
-}
 
+}
 
 party::party(const party &aCopy): partyName(nullptr), partyCount(0),
 specialSeating(nullptr), email(nullptr), promos(false)
@@ -83,6 +86,7 @@ void party::setEmail(char * pEmail)
 {
     if(email)
         delete []email;
+
     email = new char[strlen(pEmail) + 1];
     strcpy(email, pEmail);
 
@@ -101,17 +105,6 @@ void party::getPartyName(char *pName)
 }
 
 
-int party::getPartyCount() const
-{
-    return partyCount;
-}
-
-
-void party::getSpecailSeating(char *seating)
-{
-    strcpy(seating, specialSeating);
-}
-
 
 bool party::getPromos() const
 {
@@ -125,12 +118,26 @@ int party::getPartyNameLength() const
 }
 
 
+
+
+void party::getPartyEmail(char * pEmail)
+{
+    strcpy(pEmail,email);
+}
+
+
+int party::getPartyEmailLength() const
+{
+    return strlen(email);
+}
+
 party& party::operator=(const party &aCopy)
 {
     if(this == &aCopy)
     {
         return *this;
     }
+    destroy(); // clean up any old pointers
 
     // special case, all the pointers are null in the copy.
     if(!aCopy.partyName && !aCopy.specialSeating && !aCopy.email)
@@ -180,8 +187,15 @@ party& party::operator=(const party &aCopy)
 ostream &operator<<(ostream &out, const party &aParty)
 {
 
-    out << "Name: " << aParty.partyName << " Party Size: " << aParty
-    .partyCount << endl;
+    if(aParty.specialSeating == nullptr)
+    {
+        out  << aParty.partyName << " " << aParty.email <<
+        endl;
+        return out;
+    }
+    out  << aParty.partyName << " Party Size: " << aParty
+    .partyCount << " Special Seating Choice: " << aParty.specialSeating <<
+    endl;
 
 
 

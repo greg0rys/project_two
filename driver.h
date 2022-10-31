@@ -5,8 +5,9 @@ using namespace std;
 
 
 void menu();
-void workInQueue(queue &);
-void workInStack(stack &);
+void queueOperations(queue &, stack &, int);
+void stackOperations(stack &, int);
+void getChar(char &);
 int main();
 void getInput(char *&);
 party  makeParty(); // should we make this take a party *? // no bc the

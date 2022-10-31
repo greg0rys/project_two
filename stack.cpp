@@ -114,34 +114,73 @@ void stack::grow()
 
 }
 
-int stack::loadFromFile(const char *filename)
+
+int stack::getTotalItems() const
 {
+    int totalItems = 0;
+    for(auto i = 0; i < top; i++)
+    {
+        totalItems++;
+    }
+
+    return totalItems;
+}
+
+
+void stack::printStack()
+{
+    if(isEmpty())
+    {
+        return;
+    }
+    print(index);
+
+}
+
+
+void stack::print(party **array)
+{
+    typedef char* charP;
+    charP partyName = nullptr;
+    charP email = nullptr;
+    party aParty;
+    int count = 0;
+    cout << "****** Customers to contact ****** " << endl;
+    for(auto i = 0; i < top; i++)
+    {
+        aParty = *(index[i]);
+        cout << aParty;
+    }
+}
+
+int stack::loadFromFile(const char *filename, stack& aStack)
+{
+
     fstream file(filename);
     int totalLoaded = 0;
     const int MAX_CHAR = 101;
     char partyName[MAX_CHAR];
-    char specialSeats[MAX_CHAR];
     char email[MAX_CHAR];
-    int partySize;
-    char promos[MAX_CHAR];
-    bool wantPromos; // can be set using strcmp on read
+    party newParty;
 
+    cout << (!file ? "Error! " : "Success: ") << (!file ? "failed to open "
+    : "loading from ") << filename << endl;
+    if(!file)
+    {
+        return 0;
+    }
     file.get(partyName,MAX_CHAR,';');
 
     while(!file.eof())
     {
         file.get();
-        file.get(specialSeats, MAX_CHAR, ';');
-        file.get();
-        file.get(email, MAX_CHAR, ';');
-        file >> partySize;
-        file.ignore(MAX_CHAR,'\n');
-        file.get(promos, MAX_CHAR, '\n');
-        // set true if promos in CSV is 'true' else set false.
-        wantPromos = (strcmp(promos, "true") == 0);
+        file.get(email, MAX_CHAR, '\n');
 
-        party newParty(partyName, partySize, specialSeats, email, wantPromos);
-        push(newParty);
+        // set true if promos in CSV is 'true' else set false.
+        newParty.setPartyName(partyName);
+        newParty.setEmail(email);
+        cout << newParty << endl;
+        aStack.push(newParty);
         totalLoaded++;
         file.get(partyName, MAX_CHAR, ';');
     }
@@ -151,12 +190,24 @@ int stack::loadFromFile(const char *filename)
 }
 
 
-void stack::saveToFile(const char *filename, const party &aParty) const
+void stack::saveToFile(const char *filename,  party &aParty) const
 {
-    ofstream file(filename);
+    ofstream file(filename, std::ios_base::app); // append to the file
+    char * pName = nullptr;
+    char * email = nullptr;
+    pName = new char[aParty.getPartyNameLength() + 1];
+    email = new char[aParty.getPartyEmailLength() + 1];
+    aParty.getPartyName(pName);
+    aParty.getPartyEmail(email);
+
     // make use of overloaded out stream operator in party ADT
-    file << (aParty) << endl;
+    file << pName << ";" << email << endl;
     file.close();
+
+    if(pName)
+        delete []pName;
+    if(email)
+        delete []email;
 
 }
 
@@ -174,6 +225,26 @@ const stack& stack::operator=(const stack &aStack)
         index[i] = new party(*aStack.index[i]);
 
     return *this;
+}
+
+
+ostream& operator<<(ostream& out, const stack &aStack)
+{
+    char * partyName = nullptr;
+    char * email = nullptr;
+    party aParty;
+    aStack.peek(aParty);
+    partyName = new char[aParty.getPartyNameLength() + 1];
+    email = new char[aParty.getPartyEmailLength() + 1];
+    aParty.getPartyName(partyName);
+    aParty.getPartyEmail(email);
+
+    out << "Customer: " << partyName << " Email: " << email << endl;
+    if(partyName)
+        delete []partyName;
+    if(email)
+        delete []email;
+    return out;
 }
 
 

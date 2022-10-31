@@ -1,0 +1,4 @@
+greg;g@t.com
+Greg;greg@g.com
+Sally;sally@.com
+Marcos;marcosm@m.com

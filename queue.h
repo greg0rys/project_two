@@ -47,14 +47,12 @@ private:
     };
 
     node *top, *tail;
+    int count;
+    // private method stubs
     void destroy (node *&);
     node * append(node *&, const party &);
-    node * remove(node *&,party &) noexcept(false);
     void print(node *front);
-    node * getTop();
     node * removeFront(node *&, party &);
-    char * errorMsg;
-    int count;
 
 
 };

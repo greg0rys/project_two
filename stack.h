@@ -19,12 +19,14 @@ public:
     bool peek(party &aParty) const;
     int getSize() const;
     bool isEmpty() const;
+    void printStack();
 
 
-    int loadFromFile(const char *filename);
-    void saveToFile(const char *filename, const party &aParty) const;
+    int loadFromFile(const char *filename, stack &);
+    void saveToFile(const char *filename,  party &aParty) const;
 
     const stack& operator=(const stack &aStack);
+    friend ostream& operator<<(ostream &, const stack &);
 
 private:
     party ** index;
@@ -33,6 +35,8 @@ private:
     int currentSize;
     int top;
 
+    void print(party **);
     void destroy();
     void grow();
+    int getTotalItems() const;
 };

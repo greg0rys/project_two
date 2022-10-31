@@ -4,27 +4,22 @@ void menu()
 {
     queue theQueue;
     stack theStack;
-    char * partyName = nullptr;
-    char * specialSeats = nullptr;
-    char * partyEmail = nullptr;
-    char * nextParty = nullptr;
-    int partyCount;
-    bool wantsPromos;
-    bool removed;
     party aParty;
     int option = 0;
-    while(option != 7)
+    while(option != 8)
     {
         cout << " ****** MENU: ****** " << endl;
         cout << "1.\t Add a party. " << endl
              << "2.\t Seat the next party. " << endl
-             << "3.\t Display the queue (prints whole queue). " << endl
-             << "4.\t Contact customers for promotions (displays customer "
+             << "3.\t See whos next. " << endl
+             << "4.\t Display the queue (prints whole queue). " << endl
+             << "5.\t Contact customers for promotions (displays customer "
                 "info) " << endl
-             << "5.\t See all customers who want promotional offers. " <<
+             << "6.\t See all customers who want promotional offers. " <<
              endl
-             << "6.\t See past customers contacted for promotional offers "
-             << endl << endl;
+             << "7.\t See past customers contacted for promotional offers "
+             << endl
+             << "8.\t Quit" << endl << endl;
 
         cout << "Please enter a menu choice from above (EX 1. to add): ";
         option = getInteger();
@@ -32,33 +27,197 @@ void menu()
         switch(option)
         {
             case 1:
-               aParty = makeParty();
-               theQueue.enqueue(aParty);
+                queueOperations(theQueue, theStack, 1);
                 break;
             case 2:
-                if(theQueue.dequeue(aParty))
-                {
-                    if(partyName)
-                    {
-                        delete []partyName;
-                    }
-                    partyName = new char[aParty.getPartyNameLength() + 1];
-                    aParty.getPartyName(partyName);
-                    cout << partyName << " has been seated! " << endl;
-                    theStack.push(aParty);
-                }
+                queueOperations(theQueue, theStack,2);
                 break;
             case 3:
-                theQueue.printQueue();
-                cout << endl;
+                queueOperations(theQueue, theStack,3);
+                break;
+            case 4:
+                queueOperations(theQueue, theStack, 4);
+                break;
+            case 5:
+                stackOperations(theStack, 1);
+                break;
+            case 6:
+                stackOperations(theStack, 2);
+                break;
+            case 7:
+                stackOperations(theStack,3);
+                break;
+            case 8:
+                cout << "Thanks for using me! " << endl;
                 break;
             default:
                 cout << "That is not a valid menu choice please try again! "
                 << endl;
+                break;
         }
     }
 }
 
+
+void queueOperations(queue &theQueue, stack &theStack, int option)
+{
+    typedef char* charP; // rename char *
+    charP partyName = nullptr;
+    party aParty;
+
+    if(option > 4)
+    {
+        cout << "Unsupported operation choice for " << option
+             << " please try again! " << endl;
+        return;
+    }
+    switch(option)
+    {
+        case 1:
+            aParty = makeParty();
+            if(theQueue.enqueue(aParty))
+            {
+                partyName = new char[aParty.getPartyNameLength() + 1];
+                aParty.getPartyName(partyName);
+                cout << "Success " << partyName << " has been added to the "
+                                                   "queue " << endl;
+                if(partyName)
+                    delete []partyName;
+            }
+            if(aParty.getPromos())
+            {
+                partyName = new char[aParty.getPartyNameLength() + 1];
+                aParty.getPartyName(partyName);
+                cout << "Adding " << partyName << " to the promos list "
+                     << endl;
+                theStack.push(aParty);
+                if(partyName)
+                    delete []partyName;
+            }
+            break;
+        case 2:
+            if(!theQueue.peekFront(aParty))
+            {
+                cout << "There are currently no parties in the queue! " <<
+                     endl;
+                break;
+            }
+
+            cout << "*****************************" << endl;
+            cout << "Seating the next party.. " << endl;
+            cout << "Seating: " << aParty << endl;
+            theQueue.dequeue(aParty);
+            cout << "*****************************" << endl;
+            break;
+        case 3:
+            if(theQueue.isEmpty())
+            {
+                cout << "The queue is currently empty! Nothing to display.. "
+                     << endl;
+                break;
+            }
+            theQueue.peekFront(aParty);
+            cout << "The next party to be sat is: " << endl;
+            cout << "\t" << aParty << endl;
+            break;
+        case 4:
+
+            if(theQueue.isEmpty())
+            {
+                cout << "The queue is currently empty! Nothing to display.. "
+                     << endl;
+                break;
+            }
+
+            cout << theQueue << endl;
+            theQueue.printQueue();
+            break;
+        default:
+            cout << "unsupported operation, please try again " << endl;
+            break;
+    }
+}
+
+
+void stackOperations(stack &theStack, int option)
+{
+    party aParty;
+    stack previousCustomers;
+    char * partyName = nullptr;
+    char  next = 'y';
+    // could use overloaded stack print stream to print party info.
+
+    switch(option)
+    {
+        case 1:
+            cout << "There are currently: " << theStack.getSize()
+                 << " customers waiting to be contacted " << endl;
+            while(next != 'n')
+            {
+                if(!theStack.peek(aParty))
+                {
+                    cout << "End of customers to contact! " << endl;
+                    break;
+                }
+                cout << theStack << endl;
+                theStack.pop(aParty);
+                theStack.saveToFile("stack.txt", aParty);
+                cout << "Would you like to see the next customer? "
+                     << "(y for yes, n for no): ";
+
+                getChar(next);
+            }
+            break;
+        case 2:
+            if(!theStack.peek(aParty))
+            {
+                cout << "There are no customers waiting to be contacted! "
+                     << endl;
+                break;
+            }
+
+            cout << "There are " << theStack.getSize() << " customers to "
+                                                          "contact " << endl;
+            theStack.printStack();
+            break;
+        case 3:
+            previousCustomers.loadFromFile("stack.txt", previousCustomers);
+            cout << "You have contacted: " << previousCustomers.getSize()
+                 << " customers in the past " << endl;
+            previousCustomers.printStack();
+            break;
+         default:
+            cout << "Unsupported operation! Try again " << endl;
+            break;
+    }
+}
+
+
+void getChar(char &output)
+{
+    cin >> output;
+
+    while(cin.fail())
+    {
+        cin.clear();
+        cin.get();
+        cin.ignore(101,'\n');
+        cerr << "Please enter a valid character choice: (y for yes, n for no) "
+             << endl;
+        cout << "Enter input: ";
+        cin >> output;
+    }
+
+    cin.ignore(101,'\n');
+
+    while(toupper(output) != 'Y' && toupper(output) != 'N')
+    {
+        cerr << "Please enter a choice of y for yes, n for no. " << endl;
+        cout << "Enter input: ";
+        cin >> output;
+        cin.ignore(101,'\n');
+    }
+}
 
 void getInput(char *& chars) {
     char *input = nullptr; // store the input from input stream
