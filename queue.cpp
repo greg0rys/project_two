@@ -34,6 +34,7 @@ void queue::destroy(node *& head)
     {
         return;
     }
+
     destroy(head->next);
     delete head;
     head = nullptr;
