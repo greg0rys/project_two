@@ -8,25 +8,30 @@ using namespace std;
 class stack
 {
 public:
-    stack();
-    stack(const int size);
-    stack(const int size, party ** partyList);
-    stack(const stack &aStack);
-    ~stack();
+    stack(); // default constructor
+    stack(const int size); // build stack with a given size
+    stack(const int size, party ** partyList); // build a stack with a list
+    stack(const stack &aStack); // copy constructor
+    ~stack(); // class destructor
 
-    void push(const party &aParty);
-    bool pop(party &aParty);
-    bool peek(party &aParty) const;
-    int getSize() const;
-    bool isEmpty() const;
-    void printStack();
+    void push(const party &aParty); // push a party to front of stack
+    bool pop(party &aParty); // pop the party at the front of the stack off
+    bool peek(party &aParty) const; // peek at the top item
+    int getSize() const; // get the size of the stack
+    bool isEmpty() const; // check if the stack is empty
+    void printStack(); // print the values in the stack
+    int getTotalItems() const;
 
 
-    int loadFromFile(const char *filename, stack &);
+
+    int loadFromFile(const char *filename, stack &); // load a stack from
+    // the file
     void saveToFile(const char *filename,  party &aParty) const;
+    // save new values to the stack file
 
-    const stack& operator=(const stack &aStack);
-    friend ostream& operator<<(ostream &, const stack &);
+    const stack& operator=(const stack &aStack); // overload assignment
+    // operator
+    friend ostream& operator<<(ostream &, const stack &); // overload outstream
 
 private:
     party ** index;
@@ -35,8 +40,8 @@ private:
     int currentSize;
     int top;
 
-    void print(party **);
-    void destroy();
-    void grow();
-    int getTotalItems() const;
+    void print(party **); // recursive print the array
+    void destroy(); // destroy the array and its pointers
+    void grow(); // grow the array if needed.
+    void init(stack &);
 };

@@ -2,9 +2,19 @@
 #pragma ide diagnostic ignored "misc-no-recursion"
 #include "queue.h"
 
-queue::queue(): front(nullptr), tail(nullptr)
-{}
+queue::queue(): front(nullptr), tail(nullptr), count(0)
+{
+    init(*this);
+}
 
+
+/*
+ * load test data into the queue.
+ */
+void queue::init(queue &theQ)
+{
+   loadfromfile("queue.txt", theQ);
+}
 
 queue::queue(const queue &aCopy): front(nullptr), tail(nullptr), count(0)
 {
@@ -30,6 +40,56 @@ void queue::destroy(node *& head)
     tail = nullptr;
 }
 
+int queue::loadfromfile(const char *filename, queue &theQ)
+{
+    fstream file(filename);
+    int totalLoaded = 0;
+    const int MAX_CHAR = 101;
+    char partyName[MAX_CHAR];
+    char specialSeats[MAX_CHAR];
+    char email[MAX_CHAR];
+    int partySize;
+    char promos[MAX_CHAR];
+    bool wantPromos; // can be set using strcmp on read
+    static int call_count = 0;
+
+    if(call_count < 1)
+    {
+        cout << (!file ? "Error! " : "Success: ") << (!file ? "failed to open "
+                                                            : "loading from ") << filename << endl;
+        call_count++;
+    }
+
+    if(!file)
+    {
+        return 0;
+    }
+
+    file.get(partyName,MAX_CHAR,';');
+
+    while(!file.eof())
+    {
+        file.get();
+        file.get(specialSeats, MAX_CHAR, ';');
+        file.get();
+        file.get(email, MAX_CHAR, ';');
+        file.get();
+        file >> partySize;
+        file.ignore(MAX_CHAR,';');
+        file.get(promos, MAX_CHAR, '\n');
+        file.ignore(MAX_CHAR, '\n');
+        // set true if promos in CSV is 'true' else set false.
+        wantPromos = (strcmp(promos, "true") == 0);
+
+        party newParty(partyName, partySize, specialSeats, email, wantPromos);
+        theQ.enqueue(newParty);
+        totalLoaded++;
+        file.get(partyName, MAX_CHAR, ';');
+    }
+    file.close();
+
+    return totalLoaded;
+}
 
 bool queue::isEmpty()
 {
@@ -93,6 +153,7 @@ bool queue::dequeue(party &aParty)
     count--;
     return true;
 }
+
 
 queue::node* queue::removeFront(node *& head, party &aParty) {
     if(!head)

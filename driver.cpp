@@ -74,7 +74,7 @@ void queueOperations(queue &theQueue, stack &theStack, int option)
     switch(option)
     {
         case 1:
-            aParty = makeParty();
+             makeParty(aParty);
             if(theQueue.enqueue(aParty))
             {
                 partyName = new char[aParty.getPartyNameLength() + 1];
@@ -143,8 +143,9 @@ void stackOperations(stack &theStack, int option)
 {
     party aParty;
     stack previousCustomers;
+    int total = 0;
     char * partyName = nullptr;
-    char  next = 'y';
+    char  next = 'y'; // see the next customer in the stack to contact
     // could use overloaded stack print stream to print party info.
 
     switch(option)
@@ -176,13 +177,14 @@ void stackOperations(stack &theStack, int option)
                 break;
             }
 
-            cout << "There are " << theStack.getSize() << " customers to "
+            cout << "There are " << theStack.getTotalItems() << " customers to "
                                                           "contact " << endl;
             theStack.printStack();
             break;
         case 3:
-            previousCustomers.loadFromFile("stack.txt", previousCustomers);
-            cout << "You have contacted: " << previousCustomers.getSize()
+           total = previousCustomers.loadFromFile("stack.txt",
+                                                previousCustomers);
+            cout << "You have contacted: " << total
                  << " customers in the past " << endl;
             previousCustomers.printStack();
             break;
@@ -277,7 +279,13 @@ int getInteger()
     return numberIn;
 }
 
-party makeParty()
+
+/*
+ * Make a party to add to the program
+ * @param aParty a reference to a party where we will store the new parties
+ * info
+ */
+void makeParty(party &aParty)
 {
     typedef char * charC; // redefine char * to avoid having to type the
     // special char *
@@ -287,7 +295,6 @@ party makeParty()
     charC  promos = nullptr;
     bool wantsPromos = false;
     int partySize;
-    party aParty;
 
 
 
@@ -337,12 +344,6 @@ party makeParty()
         delete []promos;
 
     }
-
-    return aParty;
-
-
-
-
 
 }
 

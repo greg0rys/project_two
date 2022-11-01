@@ -4,12 +4,11 @@
 using namespace std;
 
 
-void menu();
-void queueOperations(queue &, stack &, int);
-void stackOperations(stack &, int);
-void getChar(char &);
-int main();
-void getInput(char *&);
-party  makeParty(); // should we make this take a party *? // no bc the
-// local pointer will destruct when the function ends.
-int getInteger() ;
+void menu(); // menu functions for the program
+void queueOperations(queue &, stack &, int); // operations involving the queue
+void stackOperations(stack &, int); // operations involving the stack
+void getChar(char &); // get character input from the stream
+int main(); // main function
+void getInput(char *&); // get character input from user dynamically
+void makeParty(party &); // create a party to add to the add to the program
+int getInteger() ; // get an integer from the input stream.

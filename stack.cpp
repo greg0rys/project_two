@@ -1,5 +1,8 @@
 #include "stack.h"
 
+/*
+ * Default class constructor
+ */
 stack::stack(): top(0)
 {
     currentSize = INIT_CAP;
@@ -7,6 +10,13 @@ stack::stack(): top(0)
 
     for(auto i = 0; i < currentSize; i++)
         index[i] = nullptr;
+
+    init(*this);
+}
+
+void stack::init(stack &theStack)
+{
+    loadFromFile("stack.txt", theStack);
 }
 
 /*
@@ -21,6 +31,10 @@ stack::stack(const int size, party **partyList):top(0),currentSize(size)
         index[i] = new party(*partyList[i]);
 }
 
+/*
+ * create a stack with a given size
+ * @param  size - the size of the stack
+ */
 stack::stack(const int size):top(0),currentSize(size)
 {
     index = new party *[currentSize];
@@ -30,18 +44,27 @@ stack::stack(const int size):top(0),currentSize(size)
 }
 
 
+/*
+ * Copy constructor
+ * @param aStack the stack we wish to copy from.
+ */
 stack::stack(const stack &aStack):index(nullptr),top(0)
 {
     *this = aStack;
 }
 
-
+/*
+ * Class Destructor
+ */
 stack::~stack()
 {
     destroy();
 }
 
-
+/*
+ * Destroy all the pointers inside the stacks array, and also destroy the
+ * pointer to the array itself.
+ */
 void stack::destroy()
 {
     for(auto i = 0; i < top; i++)
@@ -55,6 +78,10 @@ void stack::destroy()
 }
 
 
+/*
+ * Push a new party onto the top of the stack
+ * @param aParty a reference to the party we wish to add.
+ */
 void stack::push(const party &aParty)
 {
     if(currentSize == top)
@@ -63,7 +90,12 @@ void stack::push(const party &aParty)
     top++;
 }
 
-
+/*
+ * Pop the first party in the stack off
+ * @param aParty a reference to a party, the deleted parties values will be
+ * copied into it so the caller of this function can then use that reference
+ * to get info about the party we just removed.
+ */
 bool stack::pop(party &aParty)
 {
     if(top == 0)
@@ -75,7 +107,11 @@ bool stack::pop(party &aParty)
     return true;
 }
 
-
+/*
+ * Get a copy of the item at the top of the stack.
+ * @param aParty a reference to a party, the values of the party on top will
+ * be copied into it.
+ */
 bool stack::peek(party &aParty) const
 {
     if(top == 0)
@@ -85,20 +121,29 @@ bool stack::peek(party &aParty) const
 }
 
 
-
+/*
+ * Get the total size of the current stack
+ * @return the currentSize of the stack
+ */
 int stack::getSize() const
 {
     return currentSize;
 }
 
 
-
+/*
+ * Check to see if the stack is empty
+ * @return true if the stacks top pointer = nullptr false if else.
+ */
 bool stack::isEmpty() const
 {
     return index == nullptr;
 }
 
-
+/*
+ * Grow the current stack array by 2x its size if we run out of room in the
+ * current stack
+ */
 void stack::grow()
 {
     // growth strategy grow array by 2x its size.
@@ -114,7 +159,10 @@ void stack::grow()
 
 }
 
-
+/*
+ * Get the total number of items currently inside the stack
+ * @return the total number of items currently in the stack.
+ */
 int stack::getTotalItems() const
 {
     int totalItems = 0;
@@ -126,7 +174,10 @@ int stack::getTotalItems() const
     return totalItems;
 }
 
-
+/*
+ * Print all the parties inside our current stack
+ * @return output about all the parties in our stack
+ */
 void stack::printStack()
 {
     if(isEmpty())
@@ -137,22 +188,29 @@ void stack::printStack()
 
 }
 
-
+/*
+ * recursively print all the items in the stack
+ * @return the printed information about all the parties in the stack
+ */
 void stack::print(party **array)
 {
-    typedef char* charP;
-    charP partyName = nullptr;
-    charP email = nullptr;
     party aParty;
-    int count = 0;
     cout << "****** Customers to contact ****** " << endl;
     for(auto i = 0; i < top; i++)
     {
         aParty = *(index[i]);
         cout << aParty;
     }
+    cout << "****** End of Contacts ****** " << endl;
 }
 
+
+/*
+ * Load data for the stack from a file
+ * @param filename the name of the file we wish to open
+ * @param aStack the stack we wish to store the loaded data into
+ * @return the total number of items loaded from the file.
+ */
 int stack::loadFromFile(const char *filename, stack& aStack)
 {
 
@@ -162,9 +220,15 @@ int stack::loadFromFile(const char *filename, stack& aStack)
     char partyName[MAX_CHAR];
     char email[MAX_CHAR];
     party newParty;
+    static int call_count = 0;
 
-    cout << (!file ? "Error! " : "Success: ") << (!file ? "failed to open "
-    : "loading from ") << filename << endl;
+    if(call_count < 1)
+    {
+        cout << (!file ? "Error! " : "Success: ") << (!file ? "failed to open "
+                                                            : "loading from ") << filename << endl;
+        call_count++;
+    }
+
     if(!file)
     {
         return 0;
@@ -179,7 +243,6 @@ int stack::loadFromFile(const char *filename, stack& aStack)
         // set true if promos in CSV is 'true' else set false.
         newParty.setPartyName(partyName);
         newParty.setEmail(email);
-        cout << newParty << endl;
         aStack.push(newParty);
         totalLoaded++;
         file.get(partyName, MAX_CHAR, ';');
@@ -189,7 +252,12 @@ int stack::loadFromFile(const char *filename, stack& aStack)
     return totalLoaded;
 }
 
-
+/*
+ * Save the recently contacted party to the stack file so we have data about
+ * who we contacted
+ * @param filename the name of the file we wish to store the data in
+ * @param aParty the party we wish to store.
+ */
 void stack::saveToFile(const char *filename,  party &aParty) const
 {
     ofstream file(filename, std::ios_base::app); // append to the file
@@ -211,7 +279,11 @@ void stack::saveToFile(const char *filename,  party &aParty) const
 
 }
 
-
+/*
+ * Overloaded assignment operator
+ * @param aStack the stack we wish to copy from
+ * @return stack& a reference to this
+ */
 const stack& stack::operator=(const stack &aStack)
 {
     if(this == &aStack)
@@ -228,6 +300,12 @@ const stack& stack::operator=(const stack &aStack)
 }
 
 
+/*
+ * Overloaded out stream operator, print the party at the top of the stack
+ * @param out a reference to the ostream
+ * @param aStack the stack we are inserting into the stream
+ * @return out the reference to the output stream
+ */
 ostream& operator<<(ostream& out, const stack &aStack)
 {
     char * partyName = nullptr;

@@ -3,6 +3,7 @@
 #include <cctype>
 #include <iostream>
 #include "party.h"
+#include "stack.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
     void printQueue();
     int getCount() const;
 
+    int loadfromfile(const char *, queue &);
     friend ostream& operator<<( ostream &out, const queue &aQueue);
 
 private:
@@ -53,6 +55,7 @@ private:
     node * append(node *&, const party &);
     void print(node *front);
     node * removeFront(node *&, party &);
+    void init(queue &);
 
 
 };
