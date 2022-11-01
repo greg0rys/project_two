@@ -12,3 +12,5 @@ int main(); // main function
 void getInput(char *&); // get character input from user dynamically
 void makeParty(party &); // create a party to add to the add to the program
 int getInteger() ; // get an integer from the input stream.
+void testDataLoadedMessages(int &, int &); // get total parties loaded from
+// test files.

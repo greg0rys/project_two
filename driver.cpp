@@ -1,9 +1,16 @@
 #include "driver.h"
 
+/*
+ * main menu for the program, allows the user to perform operations on the
+ * queue or the stack.
+ */
 void menu()
 {
     queue theQueue;
+    int queueLoads = theQueue.init(theQueue); // load the queue with test data
     stack theStack;
+    int stackLoads = theStack.init(theStack);
+    testDataLoadedMessages(queueLoads,stackLoads);
     party aParty;
     int option = 0;
     while(option != 8)
@@ -59,6 +66,54 @@ void menu()
 }
 
 
+
+/*
+ * output the number of test parties loaded into the queue and the stack
+ * INPUT: queueCount a reference to the total loaded from queues init
+ *        stackCount a reference to the total loaded from stack init
+ */
+void testDataLoadedMessages(int &queueCount, int &stackCount)
+{
+    if( queueCount >= 0 && stackCount >= 0)
+    {
+        cout << "Success: loaded " << queueCount << " parties into the queue "
+             << endl;
+        cout << "Success: loaded " << stackCount << " parties into the stack "
+             << endl;
+    }
+    else if( queueCount >= 0 && stackCount <= 0)
+    {
+        cout << "Success: loaded " << queueCount << " parties into the queue "
+             << endl;
+        cout << "Failed to load test data into the stack "
+             << endl;
+    }
+    else if(stackCount >= 0 &&  queueCount <= 0)
+    {
+        cout << "Failed to load test data into the queue "
+             << endl;
+        cout << "Success: loaded " << stackCount << " parties into the stack "
+             << endl;
+    }
+    else
+    {
+        cout << "Failed to load test data into the queue "
+             << endl;
+        cout << "Failed to load test data into the stack "
+             << endl;
+    }
+}
+
+
+/*
+ * Queues operations to add, pop, traverse etc. This function is called by
+ * the menu() function
+ * INPUT: theQueue a reference to the queue we wish to operate on
+ *        theStack a reference to the stack we wish to operate on (used to
+ *        push onto the stack if promos are wanted)
+ *        option an integer representing the option of the operation we wish
+ *        to use
+ */
 void queueOperations(queue &theQueue, stack &theStack, int option)
 {
     typedef char* charP; // rename char *
@@ -139,6 +194,11 @@ void queueOperations(queue &theQueue, stack &theStack, int option)
 }
 
 
+/*
+ * Stack operations. This function handles working on our stack
+ * INPUT: theStack the stack we wish to operate on
+ *        option an int representing the menu option we wish to invoke.
+ */
 void stackOperations(stack &theStack, int option)
 {
     party aParty;
@@ -151,7 +211,7 @@ void stackOperations(stack &theStack, int option)
     switch(option)
     {
         case 1:
-            cout << "There are currently: " << theStack.getSize()
+            cout << "There are currently: " << theStack.getTotalItems()
                  << " customers waiting to be contacted " << endl;
             while(next != 'n')
             {
@@ -194,7 +254,10 @@ void stackOperations(stack &theStack, int option)
     }
 }
 
-
+/*
+ * get single char input from the user. This input is validated and ensures
+ * that proper input was given, if not it keeps prompting until statisfied.
+ */
 void getChar(char &output)
 {
     cin >> output;
@@ -221,6 +284,10 @@ void getChar(char &output)
     }
 }
 
+
+/*
+ * Get character input dynamically from the user.
+ */
 void getInput(char *& chars) {
     char *input = nullptr; // store the input from input stream
     char *temp = nullptr; // store a temp copy of the input each time input
@@ -261,6 +328,11 @@ void getInput(char *& chars) {
     delete[]input;
 }
 
+
+/*
+ * Get validated integer input from the user. ensures that the user did in
+ * fact enter a valid input, or it will keep prompting until satisfied.
+ */
 int getInteger()
 {
     int numberIn;
@@ -347,6 +419,10 @@ void makeParty(party &aParty)
 
 }
 
+
+/*
+ * Main function.
+ */
 int main()
 {
     menu();

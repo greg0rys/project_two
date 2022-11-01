@@ -1,19 +1,17 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
+
 #include "queue.h"
 
 queue::queue(): front(nullptr), tail(nullptr), count(0)
 {
-    init(*this);
 }
 
 
 /*
  * load test data into the queue.
  */
-void queue::init(queue &theQ)
+int queue::init(queue &theQ)
 {
-   loadfromfile("queue.txt", theQ);
+  return loadfromfile("queue.txt", theQ);
 }
 
 queue::queue(const queue &aCopy): front(nullptr), tail(nullptr), count(0)
@@ -24,23 +22,38 @@ queue::queue(const queue &aCopy): front(nullptr), tail(nullptr), count(0)
 
 queue::~queue()
 {
-    destroy(front);
+    front = destroy(front);
+    front = tail = nullptr;
+    count = 0;
 }
 
 
-void queue::destroy(node *& head)
+queue::node * queue::destroy(node *& head)
 {
     if(!head)
     {
-        return;
+        return nullptr;
     }
 
-    destroy(head->next);
+    // special case, make sure we aren't going to wrap back around to the front
+    if(head->next == front)
+    {
+        delete head;
+        return nullptr;
+    }
+
+    head->next = destroy(head->next);
     delete head;
-    head = nullptr;
-    tail = nullptr;
+    return nullptr;
 }
 
+
+/*
+ * Load test data into the queue at the programs start.
+ * @param filename
+ * @param theQ
+ * @return
+ */
 int queue::loadfromfile(const char *filename, queue &theQ)
 {
     fstream file(filename);
@@ -52,12 +65,15 @@ int queue::loadfromfile(const char *filename, queue &theQ)
     int partySize;
     char promos[MAX_CHAR];
     bool wantPromos; // can be set using strcmp on read
-    static int call_count = 0;
+    static int call_count = 0; // keep count of the number of times this
+    // method is called. After each call its value will remain only print
+    // success or error on first call to load from file
 
     if(call_count < 1)
     {
         cout << (!file ? "Error! " : "Success: ") << (!file ? "failed to open "
-                                                            : "loading from ") << filename << endl;
+                                                            : "loading from ")
+                                                            << filename << endl;
         call_count++;
     }
 
@@ -251,4 +267,3 @@ ostream& operator<<(ostream &out, const queue &aQueue)
 }
 
 
-#pragma clang diagnostic pop

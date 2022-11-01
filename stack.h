@@ -14,6 +14,7 @@ public:
     stack(const stack &aStack); // copy constructor
     ~stack(); // class destructor
 
+    int init(stack &); // load the stack with test data
     void push(const party &aParty); // push a party to front of stack
     bool pop(party &aParty); // pop the party at the front of the stack off
     bool peek(party &aParty) const; // peek at the top item
@@ -43,5 +44,4 @@ private:
     void print(party **); // recursive print the array
     void destroy(); // destroy the array and its pointers
     void grow(); // grow the array if needed.
-    void init(stack &);
 };

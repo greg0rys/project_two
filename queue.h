@@ -10,19 +10,21 @@ using namespace std;
 class queue
 {
 public:
-    queue();
-    queue(const queue &);
-    ~queue();
+    queue(); // default constructor
+    queue(const queue &); // copy constructor
+    ~queue(); // class destructor
 
-    bool isEmpty();
-    bool enqueue(const party &);
-    bool dequeue(party &) noexcept(false);
-    bool peekFront(party &);
-    void printQueue();
-    int getCount() const;
+    int init(queue &); // load the queue with test data
+    bool isEmpty(); // check if the queue is empty
+    bool enqueue(const party &); // add a party to end of queue
+    bool dequeue(party &) noexcept(false); // remove the front party
+    bool peekFront(party &); // get a copy of the front party
+    void printQueue(); // print the whole queue
+    int getCount() const; // get the number of people in the queue.
 
-    int loadfromfile(const char *, queue &);
-    friend ostream& operator<<( ostream &out, const queue &aQueue);
+    int loadfromfile(const char *, queue &); // load data from a file
+    friend ostream& operator<<( ostream &out, const queue &aQueue); //
+    // overload outstream
 
 private:
     struct node
@@ -51,11 +53,12 @@ private:
     node *front, *tail;
     int count;
     // private method stubs
-    void destroy (node *&);
-    node * append(node *&, const party &);
-    void print(node *front);
-    node * removeFront(node *&, party &);
-    void init(queue &);
+    node * destroy (node *&); // destroy all the pointers in the queue
+    node * append(node *&, const party &); // add a party to end of queue
+    void print(node *front); // recursively print the queue
+    node * removeFront(node *&, party &); // remove the front party from the
+    // queue
+
 
 
 };

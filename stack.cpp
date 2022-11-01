@@ -11,12 +11,17 @@ stack::stack(): top(0)
     for(auto i = 0; i < currentSize; i++)
         index[i] = nullptr;
 
-    init(*this);
 }
 
-void stack::init(stack &theStack)
+
+/*
+ * Load the stack with test data on load.
+ * INPUTS: theStack the stack we wish to load with test data.
+ * OUTPUTS: the total number of parties added to the stack
+ */
+int stack::init(stack &theStack)
 {
-    loadFromFile("stack.txt", theStack);
+    return loadFromFile("stack.txt", theStack);
 }
 
 /*
